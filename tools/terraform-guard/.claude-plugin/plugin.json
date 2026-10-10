@@ -1,0 +1,5 @@
+{
+  "name": "terraform-guard",
+  "version": "0.1.0",
+  "description": "Runs terraform plan before destroy, apply and state rm, and shows the result in the permission dialog."
+}

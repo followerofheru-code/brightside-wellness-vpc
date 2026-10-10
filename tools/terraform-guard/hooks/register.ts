@@ -131,6 +131,7 @@ export const register: Register = on => {
 
     const risk = classify(command)
     if (!risk) return base
+    $.ui.toast(`terraform-guard: checking terraform ${risk.kind}`)
 
     const name = `terraform-guard`
     const verb =

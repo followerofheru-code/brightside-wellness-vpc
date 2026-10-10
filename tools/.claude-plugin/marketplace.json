@@ -1,0 +1,5 @@
+{
+  "name": "brightside-tools",
+  "owner": { "name": "followerofheru-code" },
+  "plugins": [{ "name": "terraform-guard", "source": "./terraform-guard" }]
+}

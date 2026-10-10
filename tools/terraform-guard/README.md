@@ -27,7 +27,8 @@ claude plugin install terraform-guard@brightside-tools --scope user
 - Reads the command text; does not parse shell. Misses `eval`, `bash -c`, `$(...)`, scripts that call terraform.
 - Plan flags carried over: `-var`, `-var-file`, `-target`, `-replace`, `-chdir`. Anything else is dropped.
 - `terraform apply <planfile>` and `state rm|mv` are not re-planned; the dialog says so.
-- `bypassPermissions` mode may auto-approve an `ask`. Use permission deny rules for a hard block.
+- The mod answers `ask`; what happens next belongs to the permission mode. In auto mode a classifier decides (it may deny, and you are not shown the plan). In bypass mode, or when a settings allow rule already covers the command, no dialog may appear. Use permission deny rules for a hard block.
+- A `terraform-guard loaded` toast appears at session start. No toast means the module did not load.
 - The plan runs with `-lock=false` and needs working AWS credentials.
 - This repo's `brightside-terraform.tfvars` is not auto-loaded by Terraform; pass `-var-file=brightside-terraform.tfvars`.
 

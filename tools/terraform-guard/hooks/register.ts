@@ -110,12 +110,25 @@ const firstLines = (text: string, n: number): string =>
     .slice(0, n)
     .join(' ')
 
+const commandOf = (input: unknown): string =>
+  typeof (input as { command?: unknown })?.command === 'string'
+    ? (input as { command: string }).command
+    : ''
+
 export const register: Register = on => {
-  on('tool.check', { tool: 'Bash' }, async ($, e, next) => {
+  on('session.start', ($, e, next) => {
+    $.ui.toast('terraform-guard loaded')
+    return next(e)
+  })
+
+  // No tool matcher: Bash, PowerShell or any shell-like tool carries `command`.
+  on('tool.check', async ($, e, next) => {
+    const command = commandOf(e.input)
+    if (!command) return next(e)
+
     const base = await next(e)
     if (base.decision === 'deny') return base
 
-    const command = (e.input as { command?: string }).command ?? ''
     const risk = classify(command)
     if (!risk) return base
 
@@ -171,7 +184,7 @@ export const register: Register = on => {
   }).catch(($, e, next) =>
     next.called
       ? next(e)
-      : /terraform|tofu/i.test((e.input as { command?: string }).command ?? '')
+      : /terraform|tofu/i.test(commandOf(e.input))
         ? { decision: 'ask', reason: 'terraform-guard failed before it could judge this command.' }
         : next(e),
   )

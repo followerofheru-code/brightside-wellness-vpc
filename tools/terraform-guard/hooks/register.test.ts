@@ -94,3 +94,17 @@ test('a deny from below is kept and nothing is planned', async ($, on) => {
   expect(r.decision).toBe('deny')
   expect(argvs.length).toBe(0)
 })
+
+test('a shell tool other than Bash is guarded too', async ($, on) => {
+  const argvs = runs(on, { exitCode: 0, stdout: PLAN_DESTROY, stderr: '' })
+  const r = await $.tool.check({ tool: 'PowerShell', input: { command: 'terraform destroy' } })
+  expect(r.decision).toBe('ask')
+  expect(argvs.length).toBe(1)
+})
+
+test('tools without a command are ignored', async ($, on) => {
+  const argvs = runs(on, { exitCode: 0, stdout: '', stderr: '' })
+  const r = await $.tool.check({ tool: 'Read', input: { file_path: 'x' } })
+  expect(r.decision).toBe('allow')
+  expect(argvs.length).toBe(0)
+})
